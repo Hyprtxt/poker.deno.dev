@@ -28,7 +28,7 @@ export const STRAIGHTS_LIST = [
   ],
   ROYAL_STRAIGHT = [Deck.VALUES[0], ...Deck.VALUES.slice(9, 13)];
 
-export const Score = (hand_cards = [], bet = 5) => {
+export const score = (hand_cards = [], bet = 5) => {
     const { hand_suits, hand_values } = getHandSuitsValuesSorted(hand_cards);
     let royal, straight, flush, pair1, pair2, triple, quad, jacksorbetter;
     // bet = bet || 5

@@ -1,4 +1,4 @@
-import { Score } from "../poker.js"
+import { score } from "../poker.js"
 
 import {
   VALUES
@@ -55,7 +55,7 @@ const rule = (rule_number, INPUT_HAND) => {
     },
   };
 
-  const score = Score(INPUT_HAND);
+  const result = score(INPUT_HAND);
   const flush = getFlushCards(INPUT_HAND);
   const royal = getRoyalCards(INPUT_HAND);
   const royalFlush = getRoyalFlushCards(royal, flush);
@@ -64,7 +64,7 @@ const rule = (rule_number, INPUT_HAND) => {
   const high = getHighCards(INPUT_HAND);
   switch (rule_number) {
     case 1:
-      switch (score.status) {
+      switch (result.status) {
         case "royalflush":
         case "straightFlush":
         case "4kind":
@@ -88,7 +88,7 @@ const rule = (rule_number, INPUT_HAND) => {
       }
       break;
     case 3:
-      switch (score.status) {
+      switch (result.status) {
         case "3kind":
         case "fullhouse":
           return {
@@ -121,7 +121,7 @@ const rule = (rule_number, INPUT_HAND) => {
       }
       break;
     case 5:
-      if (score.status === "2pair") {
+      if (result.status === "2pair") {
         return {
           rule_number,
           strategy: getHoldEvents.dupes(),
@@ -130,7 +130,7 @@ const rule = (rule_number, INPUT_HAND) => {
       }
       break;
     case 6:
-      if (score.status === "jacksbetter") {
+      if (result.status === "jacksbetter") {
         return {
           rule_number,
           strategy: getHoldEvents.dupes(),
@@ -157,7 +157,7 @@ const rule = (rule_number, INPUT_HAND) => {
       }
       break;
     case 9:
-      if (score.status === "lowpair") {
+      if (result.status === "lowpair") {
         return {
           rule_number,
           strategy: getHoldEvents.dupes(),
