@@ -1,4 +1,4 @@
-import * as Deck from "./deck.js"
+import { VALUES, SUITS } from "./deck.js"
 
 // Jacks or Better Video Poker Scoring
 const getHandSuitsValuesSorted = (input_cards) => {
@@ -8,7 +8,7 @@ const getHandSuitsValuesSorted = (input_cards) => {
     hand_values.push(card.split("")[1]);
     return card.split("")[0];
   });
-  hand_values.sort((a, b) => Deck.VALUES.indexOf(a) - Deck.VALUES.indexOf(b));
+  hand_values.sort((a, b) => VALUES.indexOf(a) - VALUES.indexOf(b));
   return {
     hand_suits,
     hand_values,
@@ -16,17 +16,17 @@ const getHandSuitsValuesSorted = (input_cards) => {
 };
 
 export const STRAIGHTS_LIST = [
-    Deck.VALUES.slice(0, 5),
-    Deck.VALUES.slice(1, 6),
-    Deck.VALUES.slice(2, 7),
-    Deck.VALUES.slice(3, 8),
-    Deck.VALUES.slice(4, 9),
-    Deck.VALUES.slice(5, 10),
-    Deck.VALUES.slice(6, 11),
-    Deck.VALUES.slice(7, 12),
-    Deck.VALUES.slice(8, 13),
+    VALUES.slice(0, 5),
+    VALUES.slice(1, 6),
+    VALUES.slice(2, 7),
+    VALUES.slice(3, 8),
+    VALUES.slice(4, 9),
+    VALUES.slice(5, 10),
+    VALUES.slice(6, 11),
+    VALUES.slice(7, 12),
+    VALUES.slice(8, 13),
   ],
-  ROYAL_STRAIGHT = [Deck.VALUES[0], ...Deck.VALUES.slice(9, 13)];
+  ROYAL_STRAIGHT = [VALUES[0], ...VALUES.slice(9, 13)];
 
 export const score = (hand_cards = [], bet = 5) => {
     const { hand_suits, hand_values } = getHandSuitsValuesSorted(hand_cards);
@@ -47,7 +47,7 @@ export const score = (hand_cards = [], bet = 5) => {
       if (JSON.stringify(hand_values) === JSON.stringify(v)) straight = true;
     });
     // Values Count
-    Deck.VALUES.forEach((v, i) => {
+    VALUES.forEach((v, i) => {
       let count;
       count = 0;
       hand_values.forEach((val, idx) => {
@@ -62,7 +62,7 @@ export const score = (hand_cards = [], bet = 5) => {
       if (count === 4) quad = true;
     });
     // Suits Count
-    Deck.SUITS.forEach((v, i) => {
+    SUITS.forEach((v, i) => {
       let count;
       count = 0;
       hand_suits.forEach((val, idx) => {

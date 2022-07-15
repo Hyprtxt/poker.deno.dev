@@ -18,19 +18,21 @@ const game = () => {
     }
     return val
   })
+  const poker = score( result )
+  const cost = 5
   return {
-    hand, ...strat, result, ...score( result )
+    cost, hand, ...strat, result, ...poker, net: poker.win - 5
   }
 }
 
-let games = []  
-
 const NUMBER_GAMES = 50
-
-const spend = Array(NUMBER_GAMES).fill().map((x,i)=>i).reduce( ( prev, curr ) => {
-  const play = game()
-  // games.push(play)
-  return prev + play.win
-}, 0 ) - NUMBER_GAMES * 5
-
-console.log( `Spent ${NUMBER_GAMES * 5}, result: ${spend}` )
+const run = ( NUMBER_GAMES ) => {
+  let games = []  
+  const spend = Array(NUMBER_GAMES).fill().map((x,i)=>i).reduce( ( prev ) => {
+    const play = game()
+    games.push(play)
+    return prev + play.win
+  }, 0 ) - NUMBER_GAMES * 5
+  return { games, spend, NUMBER_GAMES }
+}
+console.log( run( NUMBER_GAMES ) )
