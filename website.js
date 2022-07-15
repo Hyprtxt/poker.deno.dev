@@ -3,26 +3,9 @@ import { getNewCards } from "./deck.js"
 import { score } from "./poker.js"
 import { simpleStrategy } from "./simple-strategy/index.js"
 import { Application, Router } from "https://deno.land/x/oak/mod.ts";
-import { bold, cyan, green, yellow } from "https://deno.land/std@0.140.0/fmt/colors.ts";
+import { logger, timer, errorLogger, noCors, logStartMessage } from "./middleware.js"
 
 const app = new Application();
-
-// Logger
-app.use(async (ctx, next) => {
-  await next();
-  const rt = ctx.response.headers.get("X-Response-Time");
-  console.log(
-    `${green(ctx.request.method)} ${cyan(ctx.request.url.pathname)} - ${bold(String(rt))}`,
-  );
-});
-
-// Timing
-app.use(async (ctx, next) => {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  ctx.response.headers.set("X-Response-Time", `${ms}ms`);
-});
 
 const game = () => {
   const deck = getNewCards()
@@ -45,12 +28,7 @@ const game = () => {
   }
 }
 
-const router = new Router();
-
-// router.get("/type", AllTypesMiddleware);
-// router.get("/type/:type", TypeMiddleware);
-
-const PlayPoker = (ctx) => {
+const playPoker = (ctx) => {
   const ID = parseInt(ctx.params.id)
   // console.log( ID )
   const NUMBER_GAMES = ID ? ID : 5
@@ -67,36 +45,18 @@ const PlayPoker = (ctx) => {
   ctx.response.body = run( NUMBER_GAMES );
 }
 
-router.get("/", PlayPoker);
-router.get("/:id", PlayPoker);
+const router = new Router();
 
-// No CORS
-app.use((ctx, next) => {
-  ctx.response.headers.set("Access-Control-Allow-Origin", "*");
-  return next();
-})
+router.get("/", playPoker);
+router.get("/:id", playPoker);
 
-// Error Handling
-app.use( async (ctx, next) => {
-  try {
-    await next();
-  } catch (err) {
-    if (err instanceof CustomPublicError) {
-      ctx.response.body = { error: err.message };
-    } else {
-      throw err;
-    }
-  }
-})
-
+app.use(logger);
+app.use(timer);
+app.use(noCors);
 app.use(router.routes());
 app.use(router.allowedMethods());
+app.use(errorLogger);
 
-app.addEventListener("listen", ({ hostname, port, serverType }) => {
-  console.log(
-    bold("Start listening on ") + yellow(`${hostname}:${port}`),
-  );
-  console.log(bold("  using HTTP server: " + yellow(serverType)));
-});
+app.addEventListener("listen", logStartMessage);
 
 await app.listen({ port: 8000 });
